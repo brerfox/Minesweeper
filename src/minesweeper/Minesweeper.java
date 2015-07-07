@@ -10,6 +10,7 @@ import java.awt.*;
 import java.awt.event.*;
 import javax.swing.*;
 import java.util.Random;
+import minesweeper.Board;
 /**
  *
  * @author David
@@ -45,9 +46,8 @@ public class Minesweeper extends JFrame {
    //public enum Board{
       //  MINE, BLANK, ONE, TWO, THREE, FOUR, FIVE, SIX, SEVEN, EIGHT
     //}
-    private Board[][] cell;
-   // private DrawCanvas canvas;
-    private JLabel statusbar;
+    private Board[][] cell = new Board[ROWS][COLS];
+ 
     GameState game;
     
     public Minesweeper(){
@@ -60,6 +60,10 @@ public class Minesweeper extends JFrame {
                 btncells[row][col] = new JButton(" ");
                 cp.add(btncells[row][col]);
             }
+        }
+        for(int row=0; row<ROWS; row++){
+        	for(int col=0; col<COLS; col++)
+        		cell[i][j] = new Board();
         }
        cp.setPreferredSize(new Dimension(CANVAS_WIDTH,CANVAS_HEIGHT));
        pack();
@@ -85,7 +89,6 @@ public class Minesweeper extends JFrame {
    
     public void initGame(){
         Random randGen = new Random();
-        
         for(int row=0; row<ROWS; row++){
             for(int col=0; col<COLS; col++){
                 btncells[row][col].setEnabled(true);  // enable button
@@ -102,8 +105,8 @@ public class Minesweeper extends JFrame {
         
         int mines = 10;
         while(mines>0){
-            int row = randGen.nextInt(9);
-            int col = randGen.nextInt(9);
+            int row = randGen.nextInt(ROWS);
+            int col = randGen.nextInt(COLS);
             if(cell[row][col].hasMine == true){
                 continue;
             }
@@ -119,10 +122,10 @@ public class Minesweeper extends JFrame {
                     continue;
                 
                 for(int i=-1; i<=1; i++){
-                    if(row+i<0 || row+i>8)
+                    if(row+i<0 || row+i>ROWS-1)
                         continue;
                     for(int j=-1; j<=1; j++){
-                        if(col+j<0 || col+j>8)
+                        if(col+j<0 || col+j>COLS-1)
                             continue;
                         else{
                             if(cell[row+i][col+j].hasMine == true)
@@ -131,26 +134,7 @@ public class Minesweeper extends JFrame {
                         }
                     }
                 }
-                switch(count){
-                    case 0:cell[row][col].number = 0;
-                        break;
-                    case 1:cell[row][col].number = 1;
-                        break;
-                    case 2:cell[row][col].number = 2;
-                        break;
-                    case 3:cell[row][col].number = 3;
-                        break;
-                    case 4:cell[row][col].number = 4;
-                        break;
-                    case 5:cell[row][col].number = 5;
-                        break;
-                    case 6:cell[row][col].number = 6;
-                        break;
-                    case 7:cell[row][col].number = 7;
-                        break;
-                    case 8:cell[row][col].number = 8;
-                        break;
-                }
+                cell[row][col].number = count;
             }
         }
         game = GameState.PLAYING;
